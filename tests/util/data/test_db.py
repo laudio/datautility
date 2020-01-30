@@ -47,6 +47,6 @@ def test_get_columns3():
         MagicMock(column_name='name', type_name='varchar', buffer_length=100)
     ]
 
-    output = db.get_columns(cur, 'laudio_client1.dbo.test_table1')
+    output = db.get_columns(cur, 'testdb.dbo.test_table1')
 
     assert output == [('id', 'int', 4), ('name', 'varchar', 100)]
