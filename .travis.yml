@@ -1,0 +1,38 @@
+language: python
+dist: xenial
+
+python:
+  - '3.7'
+
+addons:
+  apt:
+    packages:
+      - build-essential
+      - libssl-dev
+      - libffi-dev
+      - python3-dev
+      - unixodbc-dev
+      - g++
+
+install:
+  - pip install -e .[dev]
+
+  # Semver
+  - sudo curl https://raw.githubusercontent.com/fsaintjacques/semver-tool/2.1.0/src/semver -o /usr/local/bin/semver && sudo chmod +x /usr/local/bin/semver
+  - semver --version
+
+  # Hub
+  - sudo snap install hub --classic
+  - hub --version
+
+  # Avoid shallow fetching
+  - git config remote.origin.fetch +refs/heads/*:refs/remotes/origin/*
+  - git fetch --unshallow --tags
+
+before_script:
+  - export BRANCH=$(if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then echo $TRAVIS_BRANCH; else echo $TRAVIS_PULL_REQUEST_BRANCH; fi)
+  - git config --global user.name "Brother"
+  - git config --global user.email "bot@laudio.com"
+
+script:
+  - pytest -vvv
